@@ -3,28 +3,25 @@ import React from 'react';
 export default function Sidebar({ activeSection, setActiveSection }) {
   const groups = [
     {
-      title: "OVERVIEW & SETUP",
+      title: "OVERVIEW & LANDING",
       items: [
-        { id: "home", label: "Liminal Overview & Landing" },
-        { id: "deployment", label: "Deployment & Setup Guide" }
+        { id: "home", label: "Overview & Executive Summary" },
+        { id: "deployment", label: "GitHub Pages & Deployment Guide" }
       ]
     },
     {
-      title: "ASSIGNMENT SUBMISSION",
+      title: "ASSIGNMENT QUESTIONS (Q1 - Q4)",
       items: [
-        { id: "q1-api", label: "Create transaction requests", method: "POST" },
-        { id: "q2-solana-staking", label: "Solana Staking Master Guide" },
-        { id: "q3-rest-redesign", label: "RESTful API Redesign (v2)" },
-        { id: "q4-portfolio", label: "Work Samples & Portfolio" }
+        { id: "q1-api", label: "Q1: /send-many-transaction Update", method: "POST" },
+        { id: "q2-solana-staking", label: "Q2: Solana Staking Audit & Guide" },
+        { id: "q3-rest-redesign", label: "Q3: RESTful API Redesign (v2)", method: "GET" },
+        { id: "q4-portfolio", label: "Q4: Work Samples & Portfolio" }
       ]
     },
     {
-      title: "API REFERENCES",
+      title: "ADVANCED TOOLING",
       items: [
-        { id: "q1-api", label: "Send Many Transaction", method: "POST" },
-        { id: "q3-transfers-get", label: "Retrieve Transfers List", method: "GET" },
-        { id: "q3-batch-post", label: "Create Batch Transfer", method: "POST" },
-        { id: "q3-balance-get", label: "Retrieve Wallet Balances", method: "GET" }
+        { id: "mcp-guide", label: "Liminal MCP AI Integration" }
       ]
     }
   ];
