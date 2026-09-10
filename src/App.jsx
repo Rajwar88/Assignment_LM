@@ -16,6 +16,9 @@ export default function App() {
   const isResizingSidebar = useRef(false);
   const isResizingCode = useRef(false);
 
+  // Check if current page is an API Reference (shows 3rd code column) vs a Guide/Article (2-column layout)
+  const isApiPage = ['q1-api', 'q3-transfers-get', 'q3-batch-post', 'q3-balance-get'].includes(activeSection);
+
   const handleMouseDownSidebar = () => {
     isResizingSidebar.current = true;
     document.body.style.cursor = 'col-resize';
@@ -58,7 +61,9 @@ export default function App() {
       <div
         className="portal-layout"
         style={{
-          gridTemplateColumns: `${sidebarWidth}px 8px 1fr 8px ${codeWidth}px`
+          gridTemplateColumns: isApiPage
+            ? `${sidebarWidth}px 8px 1fr 8px ${codeWidth}px`
+            : `${sidebarWidth}px 8px 1fr`
         }}
       >
         <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
@@ -71,13 +76,16 @@ export default function App() {
 
         <DocReader activeSection={activeSection} />
 
-        <div
-          className="resizer-handle"
-          onMouseDown={handleMouseDownCode}
-          title="Drag to resize code panel"
-        />
-
-        <CodePanel q1Data={q1Data} activeSection={activeSection} />
+        {isApiPage && (
+          <>
+            <div
+              className="resizer-handle"
+              onMouseDown={handleMouseDownCode}
+              title="Drag to resize code panel"
+            />
+            <CodePanel q1Data={q1Data} activeSection={activeSection} />
+          </>
+        )}
       </div>
     </div>
   );

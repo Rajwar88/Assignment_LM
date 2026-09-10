@@ -3,25 +3,12 @@ import React from 'react';
 export default function Sidebar({ activeSection, setActiveSection }) {
   const groups = [
     {
-      title: "OVERVIEW & LANDING",
-      items: [
-        { id: "home", label: "Overview & Executive Summary" },
-        { id: "deployment", label: "GitHub Pages & Deployment Guide" }
-      ]
-    },
-    {
-      title: "ASSIGNMENT QUESTIONS (Q1 - Q4)",
+      title: "ASSIGNMENT TASKS (Q1 - Q4)",
       items: [
         { id: "q1-api", label: "Q1: /send-many-transaction Update", method: "POST" },
         { id: "q2-solana-staking", label: "Q2: Solana Staking Audit & Guide" },
         { id: "q3-rest-redesign", label: "Q3: RESTful API Redesign (v2)", method: "GET" },
         { id: "q4-portfolio", label: "Q4: Work Samples & Portfolio" }
-      ]
-    },
-    {
-      title: "ADVANCED TOOLING",
-      items: [
-        { id: "mcp-guide", label: "Liminal MCP AI Integration" }
       ]
     }
   ];
