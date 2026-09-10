@@ -82,12 +82,8 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - Home: index.md
-  - Assignment Tasks:
-      - "Q1: API Endpoint Update (Cube3)": q1-api-documentation.md
-      - "Q2: Solana Staking Guide Audit": q2-solana-staking-guide.md
-      - "Q3: RESTful API Redesign": q3-rest-api-redesign.md
-      - "Q4: Work Samples & Portfolio": q4-portfolio-samples.md
-  - Advanced Tooling:
-      - "Liminal MCP AI Integration": mcp-integration.md
-  - Deployment & Setup: deployment-guide.md
+  - "Q1: API Endpoint Update (Cube3)": q1-api-documentation.md
+  - "Q2: Solana Staking Guide Audit": q2-solana-staking-guide.md
+  - "Q3: RESTful API Redesign": q3-rest-api-redesign.md
+  - "Q4: Work Samples & Portfolio": q4-portfolio-samples.md
+
