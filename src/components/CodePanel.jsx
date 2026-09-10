@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Copy, Check, Play } from 'lucide-react';
+import { Copy, Check, Play, ChevronDown } from 'lucide-react';
 
 export default function CodePanel({ q1Data, activeSection }) {
   const [lang, setLang] = useState('curl');
   const [status, setStatus] = useState('201');
-  const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedRes, setCopiedRes] = useState(false);
 
   const getCodeSnippet = () => {
     if (activeSection === 'q1-api') {
@@ -44,103 +45,148 @@ export default function CodePanel({ q1Data, activeSection }) {
 }`;
   };
 
-  const handleCopy = () => {
+  const handleCopyCode = () => {
     navigator.clipboard.writeText(getCodeSnippet());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyRes = () => {
+    navigator.clipboard.writeText(getResponseJson());
+    setCopiedRes(true);
+    setTimeout(() => setCopiedRes(false), 2000);
+  };
+
+  const renderCodeWithLineNumbers = (codeText) => {
+    const lines = codeText.split('\n');
+    return (
+      <div className="numbered-code-wrapper">
+        <div className="line-numbers-col">
+          {lines.map((_, i) => (
+            <div key={i} className="line-num">{i + 1}</div>
+          ))}
+        </div>
+        <pre className="code-lines-col">
+          <code>{codeText}</code>
+        </pre>
+      </div>
+    );
   };
 
   return (
     <aside className="code-pane-col">
+      {/* Request Card */}
       <div className="interactive-card">
         <div className="card-top-bar">
           <div className="lang-selector">
-            <button
-              className={`lang-tab ${lang === 'curl' ? 'active' : ''}`}
-              onClick={() => setLang('curl')}
-            >
-              cURL
-            </button>
-            <button
-              className={`lang-tab ${lang === 'node' ? 'active' : ''}`}
-              onClick={() => setLang('node')}
-            >
-              Node
-            </button>
-            <button
-              className={`lang-tab ${lang === 'python' ? 'active' : ''}`}
-              onClick={() => setLang('python')}
-            >
-              Python
-            </button>
-            <button
-              className={`lang-tab ${lang === 'go' ? 'active' : ''}`}
-              onClick={() => setLang('go')}
-            >
-              Go
-            </button>
+            <span className="card-title-pill">cURL Request <ChevronDown size={12} style={{ display: 'inline', marginLeft: 2 }} /></span>
+            <div className="lang-tab-group">
+              <button
+                className={`lang-tab ${lang === 'curl' ? 'active' : ''}`}
+                onClick={() => setLang('curl')}
+              >
+                cURL
+              </button>
+              <button
+                className={`lang-tab ${lang === 'node' ? 'active' : ''}`}
+                onClick={() => setLang('node')}
+              >
+                Node
+              </button>
+              <button
+                className={`lang-tab ${lang === 'python' ? 'active' : ''}`}
+                onClick={() => setLang('python')}
+              >
+                Python
+              </button>
+              <button
+                className={`lang-tab ${lang === 'go' ? 'active' : ''}`}
+                onClick={() => setLang('go')}
+              >
+                Go
+              </button>
+            </div>
           </div>
 
-          <button className="copy-btn" onClick={handleCopy}>
-            {copied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
-            <span>{copied ? 'Copied!' : 'Copy Code'}</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="card-title-pill">Examples <ChevronDown size={12} style={{ display: 'inline', marginLeft: 2 }} /></span>
+            <button className="copy-btn" onClick={handleCopyCode} title="Copy Code">
+              {copiedCode ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+            </button>
+          </div>
         </div>
 
         <div className="credentials-box">
-          <span style={{ color: '#94a3b8', fontWeight: 600 }}>BASIC AUTH</span>
-          <input
-            className="input-field"
-            type="text"
-            placeholder="api_key_username"
-            defaultValue="kishor_family1office"
-          />
-          <input
-            className="input-field"
-            type="password"
-            placeholder="api_secret"
-            defaultValue="••••••••••••"
-          />
+          <span className="auth-label">BASIC AUTH</span>
+          <div className="auth-inputs">
+            <input
+              className="input-field"
+              type="text"
+              placeholder="api_key_username"
+              defaultValue="kishor_family1office"
+            />
+            <input
+              className="input-field"
+              type="password"
+              placeholder="api_secret"
+              defaultValue="••••••••••••"
+            />
+          </div>
         </div>
 
-        <div className="code-box">{getCodeSnippet()}</div>
+        <div className="code-box">
+          {renderCodeWithLineNumbers(getCodeSnippet())}
+        </div>
 
-        <button className="try-it-btn">
-          <Play size={14} />
-          <span>Try It Out!</span>
-        </button>
+        <div className="card-footer-bar">
+          <button className="try-it-btn">
+            <span>Try It!</span>
+          </button>
+        </div>
       </div>
 
-      <div className="interactive-card">
+      {/* Response Card */}
+      <div className="interactive-card" style={{ marginTop: '20px' }}>
         <div className="response-header-bar">
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
-            RESPONSE PAYLOADS
-          </span>
+          <div className="status-dropdown-wrapper">
+            <span className={`status-pill status-${status}`}>
+              ● {status} <ChevronDown size={12} style={{ display: 'inline', marginLeft: 2 }} />
+            </span>
+          </div>
 
-          <div className="status-toggle">
-            <button
-              className={`status-btn ${status === '201' ? 'active-201' : ''}`}
-              onClick={() => setStatus('201')}
-            >
-              201 Created
-            </button>
-            <button
-              className={`status-btn ${status === '422' ? 'active-422' : ''}`}
-              onClick={() => setStatus('422')}
-            >
-              422 Threat Blocked
-            </button>
-            <button
-              className={`status-btn ${status === '400' ? 'active-400' : ''}`}
-              onClick={() => setStatus('400')}
-            >
-              400 Bad Request
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="status-toggle">
+              <button
+                className={`status-btn ${status === '201' ? 'active-201' : ''}`}
+                onClick={() => setStatus('201')}
+              >
+                201
+              </button>
+              <button
+                className={`status-btn ${status === '422' ? 'active-422' : ''}`}
+                onClick={() => setStatus('422')}
+              >
+                422
+              </button>
+              <button
+                className={`status-btn ${status === '400' ? 'active-400' : ''}`}
+                onClick={() => setStatus('400')}
+              >
+                400
+              </button>
+            </div>
+
+            <button className="copy-btn" onClick={handleCopyRes} title="Copy Response">
+              {copiedRes ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
             </button>
           </div>
         </div>
 
-        <div className="code-box">{getResponseJson()}</div>
+        <div className="code-box">
+          {renderCodeWithLineNumbers(getResponseJson())}
+        </div>
       </div>
     </aside>
   );
 }
+

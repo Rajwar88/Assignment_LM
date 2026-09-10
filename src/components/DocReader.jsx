@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import BodyParamsViewer from './BodyParamsViewer';
 import { rawDocs } from '../data/rawDocs';
 
 export default function DocReader({ activeSection }) {
@@ -32,6 +33,11 @@ export default function DocReader({ activeSection }) {
       >
         {content}
       </ReactMarkdown>
+
+      {/* Render ReadMe.io Body Params Accordion Card for API Reference Pages */}
+      {(activeSection === 'q1-api' || activeSection === 'q3-batch-post') && (
+        <BodyParamsViewer />
+      )}
     </main>
   );
 }
