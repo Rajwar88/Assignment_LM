@@ -12,9 +12,12 @@
 
 ---
 
+<div class="api-row">
+<div class="api-col-left" markdown>
+
 ## Description
 
-This API is a request to execute a single or multiple transactions from a v1 withdrawal wallet to the specified destination address(es). EVM chains support transfers to a single address, while UTXO chains support transfers to one or more addresses. You can transfer funds in either native coin or token in a single request.
+This API is a request to execute a single or multiple transactions from a v1 withdrawal wallet to specified destination address(es). EVM chains support transfers to a single address, while UTXO chains support transfers to one or more addresses. You can transfer funds in either native coin or token in a single request.
 
 For opt-in asset chains like **XRP** and **Stellar (XLM)**, use `wallet.transactionType = "enableToken"` to establish a one-time trust line before sending or receiving token assets.
 
@@ -39,47 +42,7 @@ Accepted parameter values:
 
 ---
 
-## Optional Parameters
-
-1. **Address Screening (`screeningFlag`)**:
-   - `screeningFlag`: Set to `true` to activate automated pre-transaction destination address threat screening. Default is `false`.
-2. **Using `feeLevel` and `evmCustomfee`**:
-   - The `feeLevel` parameter is applicable for EVM chains (`slow`, `market`, `aggressive`, `custom`). Use only `maxFeePerGas` (Wei) if the `coin` value is `BNB`. Use both parameters for EIP-1559 chains.
-   - The `maxPriorityFeePerGas` (Wei) cannot be greater than `maxFeePerGas` (Wei).
-   - Use `evmCustomfee` object only when the `feeLevel` parameter is `custom`. Refer to the [Retrieve estimated gas fees and rates](https://docs.lmnl.app/reference/getapproxfees) API reference to get the required fee estimation rates.
-
----
-
-## Request Body Parameters
-
-```json
-{
-  "wallet": {
-    "coin": "eth",
-    "walletId": 14999,
-    "allToken": true,
-    "tokenOptions": {
-      "tokenName": "USDC",
-      "tokenAddress": "0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C"
-    }
-  },
-  "transactions": {
-    "recipientsData": {
-      "recipients": [
-        {
-          "address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe",
-          "amount": "0.008"
-        }
-      ],
-      "sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5"
-    }
-  },
-  "screeningFlag": true,
-  "feeLevel": "market"
-}
-```
-
-### Parameter Reference Table
+## Parameter Reference Table
 
 | Parameter Path | Data Type | Requirement | Description |
 | :--- | :--- | :--- | :--- |
@@ -98,6 +61,241 @@ Accepted parameter values:
 | `feeLevel` | `string` | <span class="param-optional">Optional</span> | Gas fee tier (`slow`, `market`, `aggressive`, `custom`). |
 | `evmCustomfee.maxPriorityFeePerGas` | `string` | <span class="param-optional">Optional</span> | Priority gas fee in Wei. |
 | `evmCustomfee.maxFeePerGas` | `string` | <span class="param-optional">Optional</span> | Maximum gas fee in Wei. |
+
+</div>
+<div class="api-col-right" markdown>
+
+<div class="api-col-right-header">
+  <span>Interactive Code & SDK Snippets</span>
+  <span>POST</span>
+</div>
+
+=== "cURL"
+
+    ```bash
+    curl --request POST \
+      --url https://api-sdk.lmnl.dev/api/wallet/send-many-transaction \
+      --header 'Content-Type: application/json; charset=utf-8' \
+      --header 'Authorization: Basic your_api_credentials' \
+      --data '{
+        "wallet": {
+          "coin": "eth",
+          "walletId": 14999
+        },
+        "transactions": {
+          "recipientsData": {
+            "recipients": [
+              {
+                "address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe",
+                "amount": "0.008"
+              }
+            ],
+            "sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5"
+          }
+        },
+        "screeningFlag": true,
+        "feeLevel": "market"
+      }'
+    ```
+
+=== "JavaScript (Node.js Axios)"
+
+    ```javascript
+    const axios = require('axios');
+
+    const options = {
+      method: 'POST',
+      url: 'https://api-sdk.lmnl.dev/api/wallet/send-many-transaction',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': 'Basic your_api_credentials'
+      },
+      data: {
+        wallet: { coin: 'eth', walletId: 14999 },
+        transactions: {
+          recipientsData: {
+            recipients: [{ address: '0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe', amount: '0.008' }],
+            sequenceId: '08d5893b-0066-4619-b7af-a5bae54205d5'
+          }
+        },
+        screeningFlag: true,
+        feeLevel: 'market'
+      }
+    };
+
+    axios.request(options)
+      .then(res => console.log(res.data))
+      .catch(err => console.error(err.response ? err.response.data : err));
+    ```
+
+=== "Python (Requests)"
+
+    ```python
+    import requests
+
+    url = "https://api-sdk.lmnl.dev/api/wallet/send-many-transaction"
+    headers = {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "Basic your_api_credentials"
+    }
+    payload = {
+        "wallet": {"coin": "eth", "walletId": 14999},
+        "transactions": {
+            "recipientsData": {
+                "recipients": [{"address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe", "amount": "0.008"}],
+                "sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5"
+            }
+        },
+        "screeningFlag": True,
+        "feeLevel": "market"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    print(response.json())
+    ```
+
+=== "Go (net/http)"
+
+    ```go
+    package main
+
+    import (
+    	"bytes"
+    	"encoding/json"
+    	"fmt"
+    	"io"
+    	"net/http"
+    )
+
+    func main() {
+    	url := "https://api-sdk.lmnl.dev/api/wallet/send-many-transaction"
+    	payload := map[string]interface{}{
+    		"wallet": map[string]interface{}{"coin": "eth", "walletId": 14999},
+    		"transactions": map[string]interface{}{
+    			"recipientsData": map[string]interface{}{
+    				"recipients": []map[string]string{
+    					{"address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe", "amount": "0.008"},
+    				},
+    				"sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5",
+    			},
+    		},
+    		"screeningFlag": true,
+    		"feeLevel":      "market",
+    	}
+
+    	jsonValue, _ := json.Marshal(payload)
+    	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonValue))
+    	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+    	req.Header.Set("Authorization", "Basic your_api_credentials")
+
+    	client := &http.Client{}
+    	resp, err := client.Do(req)
+    	if err != nil { panic(err) }
+    	defer resp.Body.Close()
+
+    	body, _ := io.ReadAll(resp.Body)
+    	fmt.Println(string(body))
+    }
+    ```
+
+<div class="api-col-right-header" style="margin-top: 24px;">
+  <span>Response Payloads</span>
+</div>
+
+=== "201 Created (Success)"
+
+    ```json
+    {
+      "success": true,
+      "data": {
+        "userid": 2721,
+        "raw": {
+          "txHex": "02f30580850165a0bc00850165a0bc24827b0c94b9df6d174d6f1f3a61484762e7131f46ec85b0d1871c6bf52634000080c0808080",
+          "nonce": 0,
+          "halfSigned": {
+            "payload": {
+              "amount": 0.008,
+              "destinationAddress": "0xB9dF6D174d6f1f3A61484762E7131F46Ec85b0d1",
+              "coinSymbol": "ETH",
+              "transactionHash": "bf8b8e3a72abfce5983c5e691255e68d93bc2b8b0cbe6e79ba84554c9ca85d50",
+              "fromAddress": "0x18360a1Ccf5cc7b0439F93ec5b4f09dE94BC7d77"
+            },
+            "sequenceId": "124056b0-fba1-42dc-9595-012537de5ba3"
+          }
+        },
+        "txType": "1",
+        "status": 1,
+        "walletid": "14999",
+        "chain": "ETH",
+        "timestamp": "2026-09-10T12:05:18.000Z",
+        "transactionSequenceId": 597856,
+        "sequenceId": "124056b0-fba1-42dc-9595-012537de5ba3",
+        "identifier": "bf8b8e3a72abfce5983c5e691255e68d93bc2b8b0cbe6e79ba84554c9ca85d50",
+        "amount": 0.008,
+        "fromAddress": "0x18360a1Ccf5cc7b0439F93ec5b4f09dE94BC7d77",
+        "destinationAddress": "0xB9dF6D174d6f1f3A61484762E7131F46Ec85b0d1",
+        "screeningResult": "passed",
+        "screeningID": 14823,
+        "asset": "ETH",
+        "id": 492799
+      }
+    }
+    ```
+
+=== "422 Threat Blocked"
+
+    ```json
+    {
+      "success": false,
+      "data": {
+        "error": {
+          "destinationAddress": "0x35febC10112302e0d69F35F42cCe85816f8745CA",
+          "screeningResult": "block",
+          "screeningId": 1299,
+          "riskScore": 99,
+          "message": "",
+          "params": "recipientsData.recipients[0].address",
+          "location": "body"
+        }
+      },
+      "message": "This address is involved in activities that resemble malicious and fraudulent behaviour patterns.",
+      "code": "RISK_SCREENING_FAILED"
+    }
+    ```
+
+=== "400 Bad Request"
+
+    ```json
+    {
+      "success": false,
+      "data": {
+        "errors": [
+          {
+            "value": "",
+            "msg": "coin is required",
+            "param": "wallet.coin",
+            "location": "body"
+          },
+          {
+            "value": "",
+            "msg": "wallet id is required",
+            "param": "wallet.walletId",
+            "location": "body"
+          },
+          {
+            "value": "",
+            "msg": "sequence id is required",
+            "param": "transactions.recipientsData.sequenceId",
+            "location": "body"
+          }
+        ]
+      },
+      "message": null
+    }
+    ```
+
+</div>
+</div>
 
 ---
 
@@ -228,236 +426,6 @@ Accepted parameter values:
         "maxPriorityFeePerGas": "2000000000",
         "maxFeePerGas": "20000000000"
       }
-    }
-    ```
-
----
-
-## Multi-Language SDK & Request Snippets
-
-=== "cURL"
-
-    ```bash
-    curl --request POST \
-      --url https://api-sdk.lmnl.dev/api/wallet/send-many-transaction \
-      --header 'Content-Type: application/json; charset=utf-8' \
-      --header 'Authorization: Basic your_api_credentials' \
-      --data '{
-        "wallet": {
-          "coin": "eth",
-          "walletId": 14999
-        },
-        "transactions": {
-          "recipientsData": {
-            "recipients": [
-              {
-                "address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe",
-                "amount": "0.008"
-              }
-            ],
-            "sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5"
-          }
-        },
-        "screeningFlag": true,
-        "feeLevel": "market"
-      }'
-    ```
-
-=== "JavaScript (Node.js Axios)"
-
-    ```javascript
-    const axios = require('axios');
-
-    const options = {
-      method: 'POST',
-      url: 'https://api-sdk.lmnl.dev/api/wallet/send-many-transaction',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': 'Basic your_api_credentials'
-      },
-      data: {
-        wallet: { coin: 'eth', walletId: 14999 },
-        transactions: {
-          recipientsData: {
-            recipients: [{ address: '0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe', amount: '0.008' }],
-            sequenceId: '08d5893b-0066-4619-b7af-a5bae54205d5'
-          }
-        },
-        screeningFlag: true,
-        feeLevel: 'market'
-      }
-    };
-
-    axios.request(options)
-      .then(res => console.log(res.data))
-      .catch(err => console.error(err.response ? err.response.data : err));
-    ```
-
-=== "Python (Requests)"
-
-    ```python
-    import requests
-
-    url = "https://api-sdk.lmnl.dev/api/wallet/send-many-transaction"
-    headers = {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "Basic your_api_credentials"
-    }
-    payload = {
-        "wallet": {"coin": "eth", "walletId": 14999},
-        "transactions": {
-            "recipientsData": {
-                "recipients": [{"address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe", "amount": "0.008"}],
-                "sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5"
-            }
-        },
-        "screeningFlag": True,
-        "feeLevel": "market"
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-    print(response.json())
-    ```
-
-=== "Go (net/http)"
-
-    ```go
-    package main
-
-    import (
-    	"bytes"
-    	"encoding/json"
-    	"fmt"
-    	"io"
-    	"net/http"
-    )
-
-    func main() {
-    	url := "https://api-sdk.lmnl.dev/api/wallet/send-many-transaction"
-    	payload := map[string]interface{}{
-    		"wallet": map[string]interface{}{"coin": "eth", "walletId": 14999},
-    		"transactions": map[string]interface{}{
-    			"recipientsData": map[string]interface{}{
-    				"recipients": []map[string]string{
-    					{"address": "0x017208E63ec387461C7e8f20bA9C6F9Dec939cfe", "amount": "0.008"},
-    				},
-    				"sequenceId": "08d5893b-0066-4619-b7af-a5bae54205d5",
-    			},
-    		},
-    		"screeningFlag": true,
-    		"feeLevel":      "market",
-    	}
-
-    	jsonValue, _ := json.Marshal(payload)
-    	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonValue))
-    	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-    	req.Header.Set("Authorization", "Basic your_api_credentials")
-
-    	client := &http.Client{}
-    	resp, err := client.Do(req)
-    	if err != nil { panic(err) }
-    	defer resp.Body.Close()
-
-    	body, _ := io.ReadAll(resp.Body)
-    	fmt.Println(string(body))
-    }
-    ```
-
----
-
-## Response Payloads & Status Codes
-
-Select a status code tab to view the exact sample response payload:
-
-=== "201 Created — Success (Screening Passed)"
-
-    ```json
-    {
-      "success": true,
-      "data": {
-        "userid": 2721,
-        "raw": {
-          "txHex": "02f30580850165a0bc00850165a0bc24827b0c94b9df6d174d6f1f3a61484762e7131f46ec85b0d1871c6bf52634000080c0808080",
-          "nonce": 0,
-          "halfSigned": {
-            "payload": {
-              "amount": 0.008,
-              "destinationAddress": "0xB9dF6D174d6f1f3A61484762E7131F46Ec85b0d1",
-              "coinSymbol": "ETH",
-              "transactionHash": "bf8b8e3a72abfce5983c5e691255e68d93bc2b8b0cbe6e79ba84554c9ca85d50",
-              "fromAddress": "0x18360a1Ccf5cc7b0439F93ec5b4f09dE94BC7d77"
-            },
-            "sequenceId": "124056b0-fba1-42dc-9595-012537de5ba3"
-          }
-        },
-        "txType": "1",
-        "status": 1,
-        "walletid": "14999",
-        "chain": "ETH",
-        "timestamp": "2026-09-10T12:05:18.000Z",
-        "transactionSequenceId": 597856,
-        "sequenceId": "124056b0-fba1-42dc-9595-012537de5ba3",
-        "identifier": "bf8b8e3a72abfce5983c5e691255e68d93bc2b8b0cbe6e79ba84554c9ca85d50",
-        "amount": 0.008,
-        "fromAddress": "0x18360a1Ccf5cc7b0439F93ec5b4f09dE94BC7d77",
-        "destinationAddress": "0xB9dF6D174d6f1f3A61484762E7131F46Ec85b0d1",
-        "screeningResult": "passed",
-        "screeningID": 14823,
-        "asset": "ETH",
-        "id": 492799
-      }
-    }
-    ```
-
-=== "422 Unprocessable Entity — Threat Screening Blocked (RISK_SCREENING_FAILED)"
-
-    ```json
-    {
-      "success": false,
-      "data": {
-        "error": {
-          "destinationAddress": "0x35febC10112302e0d69F35F42cCe85816f8745CA",
-          "screeningResult": "block",
-          "screeningId": 1299,
-          "riskScore": 99,
-          "message": "",
-          "params": "recipientsData.recipients[0].address",
-          "location": "body"
-        }
-      },
-      "message": "This address is involved in activities that resemble malicious and fraudulent behaviour patterns.",
-      "code": "RISK_SCREENING_FAILED"
-    }
-    ```
-
-=== "400 Bad Request — Validation Failure"
-
-    ```json
-    {
-      "success": false,
-      "data": {
-        "errors": [
-          {
-            "value": "",
-            "msg": "coin is required",
-            "param": "wallet.coin",
-            "location": "body"
-          },
-          {
-            "value": "",
-            "msg": "wallet id is required",
-            "param": "wallet.walletId",
-            "location": "body"
-          },
-          {
-            "value": "",
-            "msg": "sequence id is required",
-            "param": "transactions.recipientsData.sequenceId",
-            "location": "body"
-          }
-        ]
-      },
-      "message": null
     }
     ```
 
